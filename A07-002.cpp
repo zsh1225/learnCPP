@@ -8,7 +8,7 @@ int fun2(int);
 int main()
 {
     int t1,t2;
-//    cout<<setw(6)<<1;
+//    cout<<setw(6)<<1 ;
     for(int i=1;i<=500;i++)
     {
         if(ss(i)==0)
