@@ -115,17 +115,25 @@ HLink FirstH(HLink &H){
 }
 
 //函数void MoveK1(HLink &H, int k)，将单链表中倒数第k个结点之后的所有结点移到头结点后面，注意：严禁采用先计算链表长度n再减k（即n-k）的方法；
-void MoveK1(HLink &H, int k){//TODO: 单链表中倒数第k个结点之后的所有结点移到头结点后面
-    HLink p = H;
-    while (p->next != NULL && k-- > 0){
+void MoveK1(HLink &H, int k){//单链表中倒数第k个结点之后的所有结点移到头结点后面
+    HLink p = H->next;
+    HLink p_pre=p;//倒数第k个节点的指针
+    int n=1;
+    while (p->next != NULL&&n<k){//使p_pre和p间隔k
+        p = p->next;
+        n++;
+    }
+    if (p == NULL){//如果链表中没有k个节点，则直接返回
+        printf("链表中没有足够的节点\n");
+        return;
+    }
+    while (p->next != NULL){
+        p_pre=p_pre->next;
         p = p->next;
     }
-    if (p->next != NULL){
-        HLink q = p->next;
-        p->next = q->next;
-        q->next = H->next;
-        H->next = q;
-    }
+    p_pre->next = p->next;
+    p->next = H->next;
+    H->next = p;//TODO
 }
 
 //函数void ReverseN2(HLink &H)，将单链表的正中间位置结点之后的全部结点倒置的功能，注意：严禁采用先计算链表长度n再除以2（即n/2）的方法；
@@ -151,31 +159,53 @@ void ReverseN2(HLink &H){
     }
 }
 
-//函数void SortPriceL(HLink &H)，按照客房（入住价格，客房名称）升序排序；
+//函数void SortPriceL(HLink &H)，按照客房（入住价格，客房名称）升序排序；插入排序
 void SortPriceL(HLink &H){
-    HLink p, q, r;
-    p = H->next;
-    while (p != NULL){
-        q = p->next;
-        r = p;
-        while (q != NULL){
-            if (strcmp(q->roomN, r->roomN) > 0 || (strcmp(q->roomN, r->roomN) == 0 && q->PriceL < r->PriceL)){
-                r = q;
+    int count=0;
+    HLink p, q_pre, r_pre;
+    printf("_____%d______\n",count);
+        Exp(H);
+    p = H->next->next;
+    
+    q_pre = H;
+    H->next->next=NULL;
+        
+    while (p != NULL){//无序表
+    count++;
+        r_pre = H;
+        q_pre = H;
+        while (q_pre->next != NULL){//遍历有序表
+            if (q_pre->next->PriceL < r_pre->next->PriceL){
+                r_pre = q_pre;
             }
-            q = q->next;
+            else if(q_pre->next->PriceL==r_pre->next->PriceL&&strcmp(q_pre->next->roomN,r_pre->next->roomN)<0){
+                r_pre = q_pre;
+            }
+            q_pre = q_pre->next;
         }
-        if (r != H){
-            int tempBeds = r->Beds;
-            char *tempState = strdup(r->State);
-            float tempPriceL = r->PriceL;
-            strcpy(r->State, H->State);
-            strcpy(H->State, tempState);
-            r->PriceL = H->PriceL;
-            H->PriceL = tempPriceL;
-            r->Beds = H->Beds;
-            H->Beds = tempBeds;
+        printf("_____%d______\n",count);
+        Exp(H);
+        if (r_pre != H){
+            //TODO:插入节点到r->next前
+            HLink temp1=r_pre->next->next;
+            HLink temp2=p->next;
+            r_pre->next=p;
+            p->next=temp1;
+            p=temp2; 
         }
-        p = q;
+        else {
+            // HLink temp1=q_pre->next->next;
+            HLink temp2=p->next;
+            // q_pre->next=p;
+            // p->next=temp1;
+            // p=temp2; 
+            q_pre->next = p;
+            p->next=NULL;
+            p = temp2;
+        }
+        printf("_____%d______\n",count);
+        Exp(H);
+        //p = q;
     }
 }
 
@@ -273,8 +303,17 @@ int main(){
     printf("%d\n",Find(H_Linklist,roomnum));
     updateH(H_Linklist,2,"in");
     Exp(H_Linklist);
+    printf("aaaaaaaaaaaaaaaaaaaaa\n");
     Add(H_Linklist);
     Exp(H_Linklist);
+    printf("aaaaaaaaaaaaaaaaaaaaa\n");
     HLink p=FirstH(H_Linklist);
     printf("%s%8.1f%8.1f%6d%8s\n",p->roomN,p->Price,p->PriceL,p->Beds,p->State);
+    printf("aaaaaaaaaaaaaaaaaaaaa\n");
+    MoveK1(H_Linklist,2);
+    Exp(H_Linklist);
+    printf("SortPriceL(H_Linklist)\n");
+    SortPriceL(H_Linklist);
+    Exp(H_Linklist);
+
 }
