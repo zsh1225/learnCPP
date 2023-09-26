@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
-#include <bits/stdc++.h>
+#include<stdio.h>
+//#include <bits/stdc++.h>
 using  namespace std;
 typedef struct HNode
 {
@@ -8,34 +9,34 @@ typedef struct HNode
     float Price;        // 标准价格
     float PriceL;       // 入住价格(默认值=标准价格*80%)
     int Beds;           // 床位数Beds
-    char State[7];      // 入住状态(值域："空闲"、"入住"、"预订"，默认值为"空闲")
+    char State[7];      // 入住状态(值域："空闲(free)"、"入住(in)"、"预订(reserve)"，默认值为"空闲")
     struct HNode *next; // 指针域
 } Hotel,*HLink;
 
 // 初始化函数
 Hotel *init_hotel_list()
 {
-    Hotel *head = (Hotel *)malloc(sizeof(Hotel));
+    HLink head = (HLink)malloc(sizeof(Hotel));
     head->next = NULL;
-    Hotel *pRear = NULL;
-    Hotel *new_node = NULL;
+    HLink pRear = head;
+    HLink new_node = NULL;
     FILE *fp;
     if ((fp = fopen("HotelInit.txt", "r")) == NULL)
     {
         printf("文件打开失败！\n");
         return NULL;
     }
-    while (1)
+    while (!feof(fp))
     {
-        if (feof(fp))
-            break;
-        Hotel *new_node =(Hotel *) malloc(sizeof(Hotel));
-        fscanf(fp, "%s %f,%d", new_node->roomN, &new_node->Price, &new_node->Beds);
+        // if (feof(fp))
+        //     break;
+        HLink new_node =(HLink) malloc(sizeof(Hotel));
+        fscanf(fp, "%s %f %d", new_node->roomN, &new_node->Price, &new_node->Beds);
         // fscanf(fp, "%s%s%s%d%d%d%d", &newstu->num, &newstu->name, &newstu->major, &newstu->classNo, &newstu->score[0], &newstu->score[1], &newstu->score[2]);
         new_node->PriceL = new_node->Price * 0.8;
         strcpy(new_node->State, "free");
-        if (feof(fp))
-            break;
+        // if (feof(fp))
+        //     break;
         new_node->next = NULL;
         pRear->next = new_node;
         pRear = new_node;
@@ -51,22 +52,23 @@ void Build(HLink &H){
 }
 
 //实现输出客房信息函数void Exp(HLink H)，输出所有客房的客房名称、标准价格、入住价格、床位数、入住状态
-void Exp(HLink H){
-    while (H != NULL){
+void Exp(HLink &H){
+    HLink p = H->next;
+    while (p != NULL){
         // printf("客房名称：%s\n", H->roomN);
         // printf("标准价格：%.2f\n", H->Price);
         // printf("入住价格：%.2f\n", H->PriceL);
         // printf("床位数：%d\n", H->Beds);
         // printf("入住状态：%s\n", H->State);
-        printf("%s%8.1f%8.1f%6d%8s\n",H->roomN,H->Price,H->PriceL,H->Beds,H->State);
-        H = H->next;
+        printf("%s%8.1f%8.1f%6d%8s\n",p->roomN,p->Price,p->PriceL,p->Beds,p->State);
+        p = p->next;
     }
 }
 
 //函数int Find(HLink &H, char *roomN)，查找房间名称为roomN的客房。
 //如果找到，则返回该客房在链表中的位置序号（>=1），否则返回0。提示：用strcmp()字符串比较函数；
 int Find(HLink &H, char *roomN){
-    HLink p = H;
+    HLink p = H->next;
     int i = 1;
     while (p != NULL && strcmp(p->roomN, roomN)){
         p = p->next;
@@ -75,44 +77,45 @@ int Find(HLink &H, char *roomN){
     return p != NULL ? i : 0;
 }
 
-//实现函数void updateH(HLink &H, int beds, char *state)，将床位数为beds的客房入住状态改为state。提示：用strcpy()字符串拷贝函数；
+//实现函数void updateH(HLink &H, int beds, char *state)，
+// 将床位数为beds的客房入住状态改为state。提示：用strcpy()字符串拷贝函数；
 void updateH(HLink &H, int beds, char *state){
-    while (H != NULL && strcmp(H->roomN, state)){
-        H = H->next;
-    }
-    if (H != NULL){
-        H->Beds = beds;
-        strcpy(H->State, state);
+    HLink p = H->next;
+    while (p != NULL ){
+        if(p->Beds==beds){
+            strcpy(p->State, state);
+        }
+        p = p->next;
     }
 }
 
 //函数void Add(HLink &H)，将该链表中未入住的客房入住价格均加价20%；
 void Add(HLink &H){
-    HLink p = H;
-    while (p != NULL && strcmp(p->State, "free")){
+    HLink p = H->next;
+    while (p != NULL ){
+        if(!strcmp(p->State, "free")){
+            p->PriceL *= 1.2;
+        }
         p = p->next;
-    }
-    if (p != NULL){
-        p->PriceL *= 1.2;
     }
 }
 
 //求出入住价格最高的客房函数HLink FirstH(HLink &H)，该函数内return语句返回入住价格最高的客房结点指针，返回前将该结点在链表中删除；
 HLink FirstH(HLink &H){
-    HLink p = H;
-    while (p->next != NULL && p->next->Price > p->Price){
-        p = p->next;
+    HLink p_pre = H;//当前值的前一个
+    HLink Highest_pre = H;
+    while (p_pre->next != NULL){
+        if(p_pre->next->PriceL>Highest_pre->next->PriceL)
+        Highest_pre=p_pre;
+        p_pre = p_pre->next;
     }
-    if (p->next != NULL){
-        HLink temp = p->next;
-        p->next = p->next->next;
-        free(temp);
-    }
+    HLink p=Highest_pre->next;
+    Highest_pre->next=Highest_pre->next->next;
     return p;
 }
 
 //函数void MoveK1(HLink &H, int k)，将单链表中倒数第k个结点之后的所有结点移到头结点后面，注意：严禁采用先计算链表长度n再减k（即n-k）的方法；
-void MoveK1(HLink &H, int k){
+void MoveK1(HLink &H, int k){//TODO: 单链表中倒数第k个结点之后的所有结点移到头结点后面
     HLink p = H;
     while (p->next != NULL && k-- > 0){
         p = p->next;
@@ -263,8 +266,15 @@ void free_hotel_list(Hotel *head)
 
 
 int main(){
-    cout << "Hello, World!" << endl;
     HLink H_Linklist=NULL;
     Build(H_Linklist);
-
+    Exp(H_Linklist);
+    char roomnum[10]="1011";
+    printf("%d\n",Find(H_Linklist,roomnum));
+    updateH(H_Linklist,2,"in");
+    Exp(H_Linklist);
+    Add(H_Linklist);
+    Exp(H_Linklist);
+    HLink p=FirstH(H_Linklist);
+    printf("%s%8.1f%8.1f%6d%8s\n",p->roomN,p->Price,p->PriceL,p->Beds,p->State);
 }
