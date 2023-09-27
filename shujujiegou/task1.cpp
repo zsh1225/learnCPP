@@ -119,7 +119,7 @@ void MoveK1(HLink &H, int k){//单链表中倒数第k个结点之后的所有结
     HLink p = H->next;
     HLink p_pre=p;//倒数第k个节点的指针
     int n=1;
-    while (p->next != NULL&&n<k){//使p_pre和p间隔k
+    while (p->next != NULL&&n<=k){//使p_pre和p间隔k
         p = p->next;
         n++;
     }
@@ -131,9 +131,10 @@ void MoveK1(HLink &H, int k){//单链表中倒数第k个结点之后的所有结
         p_pre=p_pre->next;
         p = p->next;
     }
-    p_pre->next = p->next;
+    HLink temp=p_pre->next;
+    p_pre->next = NULL;
     p->next = H->next;
-    H->next = p;//TODO
+    H->next = temp;//TODO
 }
 
 //函数void ReverseN2(HLink &H)，将单链表的正中间位置结点之后的全部结点倒置的功能，注意：严禁采用先计算链表长度n再除以2（即n/2）的方法；
@@ -303,13 +304,11 @@ int main(){
     printf("%d\n",Find(H_Linklist,roomnum));
     updateH(H_Linklist,2,"in");
     Exp(H_Linklist);
-    printf("aaaaaaaaaaaaaaaaaaaaa\n");
     Add(H_Linklist);
     Exp(H_Linklist);
-    printf("aaaaaaaaaaaaaaaaaaaaa\n");
     HLink p=FirstH(H_Linklist);
     printf("%s%8.1f%8.1f%6d%8s\n",p->roomN,p->Price,p->PriceL,p->Beds,p->State);
-    printf("aaaaaaaaaaaaaaaaaaaaa\n");
+    printf("\n");
     MoveK1(H_Linklist,2);
     Exp(H_Linklist);
     printf("SortPriceL(H_Linklist)\n");
