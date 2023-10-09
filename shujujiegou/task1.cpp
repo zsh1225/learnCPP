@@ -281,6 +281,7 @@ void upBed(HLink &H, int beds)
     strcpy(new_node->State, "free");
     new_node->next = NULL;
     HLink Hq= (HLink)malloc(sizeof(Hotel));
+    Hq->next=NULL;
     HLink q=Hq;
     while (p->next!=NULL)
     {
@@ -288,13 +289,15 @@ void upBed(HLink &H, int beds)
             HLink temp=p->next->next;
             q->next=p->next;
             
-            q->next=NULL;
+            q->next->next=NULL;
             p->next=temp;
+            q=q->next;
         }
         else {
             p=p->next;
         }
     }
+ //   Exp(Hq);
     p->next=new_node;
     new_node->next=Hq->next;
     free(Hq);
