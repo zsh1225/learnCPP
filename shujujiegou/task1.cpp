@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-// #include <bits/stdc++.h>
 using namespace std;
 typedef struct HNode
 {
@@ -14,41 +13,30 @@ typedef struct HNode
 } Hotel, *HLink;
 
 // 初始化函数
-Hotel *init_hotel_list()
+Hotel *Build(char filename[10])
 {
     HLink head = (HLink)malloc(sizeof(Hotel));
     head->next = NULL;
     HLink pRear = head;
     HLink new_node = NULL;
     FILE *fp;
-    if ((fp = fopen("HotelInit.txt", "r")) == NULL)
+    if ((fp = fopen(filename, "r")) == NULL)
     {
         printf("文件打开失败！\n");
         return NULL;
     }
     while (!feof(fp))
     {
-        // if (feof(fp))
-        //     break;
         HLink new_node = (HLink)malloc(sizeof(Hotel));
         fscanf(fp, "%s %f %d", new_node->roomN, &new_node->Price, &new_node->Beds);
-        // fscanf(fp, "%s%s%s%d%d%d%d", &newstu->num, &newstu->name, &newstu->major, &newstu->classNo, &newstu->score[0], &newstu->score[1], &newstu->score[2]);
         new_node->PriceL = new_node->Price * 0.8;
         strcpy(new_node->State, "free");
-        // if (feof(fp))
-        //     break;
         new_node->next = NULL;
         pRear->next = new_node;
         pRear = new_node;
     }
     fclose(fp);
-    // printf("成功从studentInit.dat文件中读取 %d 条记录！\n", stu_count);
     return head;
-}
-// 实现创建客房信息链表函数void Build(HLink &H)，输入（客房名称、标准价格、床位数），同时修改入住价格、入住状态为默认值，即入住价格=标准价格*80%，入住状态为”空闲”（提示：用strcpy()字符串拷贝函数）。为了提高程序调试效率，要求：用文件操作来输入客房信息（客房名称、标准价格、床位数）；
-void Build(HLink &H)
-{
-    H = init_hotel_list();
 }
 
 // 实现输出客房信息函数void Exp(HLink H)，输出所有客房的客房名称、标准价格、入住价格、床位数、入住状态
@@ -57,11 +45,6 @@ void Exp(HLink &H)
     HLink p = H->next;
     while (p != NULL)
     {
-        // printf("客房名称：%s\n", H->roomN);
-        // printf("标准价格：%.2f\n", H->Price);
-        // printf("入住价格：%.2f\n", H->PriceL);
-        // printf("床位数：%d\n", H->Beds);
-        // printf("入住状态：%s\n", H->State);
         printf("%s%8.1f%8.1f%6d%8s\n", p->roomN, p->Price, p->PriceL, p->Beds, p->State);
         p = p->next;
     }
@@ -150,7 +133,7 @@ void MoveK1(HLink &H, int k)
     HLink temp = p_pre->next;
     p_pre->next = NULL;
     p->next = H->next;
-    H->next = temp; // TODO
+    H->next = temp; 
 }
 
 // 函数void ReverseN2(HLink &H)，将单链表的正中间位置结点之后的全部结点倒置的功能，注意：严禁采用先计算链表长度n再除以2（即n/2）的方法；
@@ -181,60 +164,6 @@ void ReverseN2(HLink &H)
 }
 
 // 函数void SortPriceL(HLink &H)，按照客房（入住价格，客房名称）升序排序；插入排序
-//  void SortPriceL(HLink &H){
-//      int count=0;
-//      HLink p, q_pre, r_pre;
-//      printf("_____%d______\n",count);
-//          Exp(H);
-//      p = H->next->next;
-
-//     q_pre = H;
-//     H->next->next=NULL;
-
-//     while (p != NULL){//无序表
-//     count++;
-//         r_pre = H;
-//         q_pre = H;
-//         int pd=0;
-//         while (q_pre->next != NULL){//遍历有序表
-//             if (q_pre->next->PriceL > r_pre->next->PriceL){
-//                 r_pre = q_pre;
-//                 pd=1;
-//             }
-//             else if(q_pre->next->PriceL==r_pre->next->PriceL&&strcmp(q_pre->next->roomN,r_pre->next->roomN)<0){
-//                 r_pre = q_pre;
-//                 pd=1;
-//             }
-//             q_pre = q_pre->next;
-//         }
-//         // printf("_____%d______\n",count);
-//         // Exp(H);
-//         if (pd==1){//r_pre != H
-//             //TODO:插入节点到r->next前
-//             printf("运行1\n");
-//             HLink temp1=r_pre->next;
-//             HLink temp2=p->next;
-//             r_pre->next=p;
-//             p->next=temp1;
-//             p=temp2;
-//         }
-//         else {
-//             printf("运行2\n");
-//             // HLink temp1=q_pre->next->next;
-//             HLink temp2=p->next;
-//             // q_pre->next=p;
-//             // p->next=temp1;
-//             // p=temp2;
-//             q_pre->next = p;
-//             p->next=NULL;
-//             p = temp2;
-//         }
-//         printf("_____%d______\n",count);
-//         Exp(H);
-//         //p = q;
-//     }
-// }
-
 void SortPriceL(HLink &H)
 {
     int pd = 1;
@@ -247,7 +176,6 @@ void SortPriceL(HLink &H)
         {
             if (p->next->PriceL > p->next->next->Price)
             {
-                // printf("swap%s%s\n",p->next->roomN,p->next->next->roomN);
                 HLink p1 = p->next, p2 = p->next->next->next;
                 p->next = p->next->next;
                 p->next->next = p1;
@@ -297,7 +225,6 @@ void upBed(HLink &H, int beds)
             p=p->next;
         }
     }
- //   Exp(Hq);
     p->next=new_node;
     new_node->next=Hq->next;
     free(Hq);
@@ -307,69 +234,39 @@ void upBed(HLink &H, int beds)
 // 实现函数void Merge(HLink &H1, HLink &H2)，将两个按入住价格非递减排序的客房记录单合并为一个按入住价格非递增排序的客房记录单；要求算法的时间复杂度不超过两个链表的长度之和O(m+n)；
 void Merge(HLink &H1, HLink &H2)
 {
-    HLink p = H1->next;
-    while (p != NULL && p->next != NULL)
-    {
-        if (strcmp(p->State, "free") == 0)
-        {
-            H1->next = p->next;
-            free(p);
-            p = H1->next;
-        }
-        else
-        {
-            p = p->next;
-        }
-    }
-    if (p != NULL && strcmp(p->State, "free") == 0)
-    {
-        H1->next = NULL;
-    }
-    HLink q = H2->next;
-    while (q != NULL && q->next != NULL)
-    {
-        if (strcmp(q->State, "free") == 0)
-        {
-            H2->next = q->next;
-            free(q);
-            q = H2->next;
-        }
-        else
-        {
-            q = q->next;
-        }
-    }
-    if (q != NULL && strcmp(q->State, "free") == 0)
-    {
-        H2->next = NULL;
-    }
     HLink r = H1->next;
     HLink s = H2->next;
-    while (r != NULL && s != NULL)
+    H1->next = NULL;
+    while (r != NULL || s != NULL)
     {
-        if (r->PriceL > s->PriceL)
+        if(r==NULL){
+            HLink temp1=H1->next,temp2=s->next;
+            H1->next = s;
+            s->next = temp1;
+            s = temp2;
+        }
+        else if(s==NULL){
+            HLink temp1=H1->next,temp2=r->next;
+            H1->next = r;
+            r->next = temp1;
+            r = temp2;
+        }
+        else if (r->PriceL > s->PriceL)//取s
         {
-            H2->next = s;
-            s->next = r;
-            r = H1->next;
-            s = H2->next;
+            HLink temp1=H1->next,temp2=s->next;
+            H1->next = s;
+            s->next = temp1;
+            s = temp2;
         }
         else
         {
-            H1->next = s;
-            s->next = r;
-            r = H1->next;
-            s = H2->next;
+            HLink temp1=H1->next,temp2=r->next;
+            H1->next = r;
+            r->next = temp1;
+            r = temp2;
         }
     }
-    if (r != NULL)
-    {
-        H2->next = r;
-    }
-    else
-    {
-        H1->next = s;
-    }
+    
 }
 
 // 释放链表内存函数
@@ -384,25 +281,23 @@ void free_hotel_list(Hotel *head)
     }
 }
 
+void Menu(){
+    printf("1.导入酒店数据\n");
+    printf("2.查看酒店数据\n");
+    printf("3.删除酒店数据\n");
+    printf("4.查找房间\n");
+    printf("1.添加房间\n");
+    printf("2.按价格排序\n");
+    printf("3.合并两个房间记录单\n");
+    printf("4.释放内存\n");
+    printf("5.退出\n");
+}
 int main()
 {
-    HLink H_Linklist = NULL;
-    Build(H_Linklist);
-    Exp(H_Linklist);
-    // char roomnum[10]="1011";
-    // printf("%d\n",Find(H_Linklist,roomnum));
-    // updateH(H_Linklist,2,"in");
-    // Exp(H_Linklist);
-    // Add(H_Linklist);
-    // Exp(H_Linklist);
-    // HLink p=FirstH(H_Linklist);
-    // printf("%s%8.1f%8.1f%6d%8s\n",p->roomN,p->Price,p->PriceL,p->Beds,p->State);
-    // printf("\n");
-    MoveK1(H_Linklist, 2);
-    Exp(H_Linklist);
-    printf("SortPriceL(H_Linklist)\n");
-    SortPriceL(H_Linklist);
-    Exp(H_Linklist);
-    upBed(H_Linklist, 8);
-    Exp(H_Linklist);
+    HLink H_Linklist[10] = {NULL};
+    H_Linklist[1]=Build("Hotel1.txt");
+    H_Linklist[2]=Build("Hotel2.txt");
+
+
+
 }
