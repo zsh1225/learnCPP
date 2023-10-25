@@ -146,11 +146,7 @@ void ReverseN2(HLink &H)
     HLink p1 = H, p2 = H->next, p3;
     while (p2->next != NULL)
     {
-        if (p2->next == NULL)
-        {
-            break;
-        }
-        else if (p2->next->next == NULL)
+        if (p2->next->next == NULL)
         {
             break;
         }
@@ -175,38 +171,77 @@ void ReverseN2(HLink &H)
     }
 }
 
+// // 函数void SortPriceL(HLink &H)，按照客房（入住价格，客房名称）升序排序；冒泡
+// void SortPriceL(HLink &H)
+// {
+//     int pd = 1;
+//     while (pd != 0)
+//     {
+//         pd = 0;
+//         HLink p = H;
+//         if(p->next==NULL) {
+//             printf("空");
+//             return;
+//         }
+//         while (p->next->next != NULL)
+//         {
+//             if (p->next->PriceL > p->next->next->Price)
+//             {
+//                 HLink p1 = p->next, p2 = p->next->next->next;
+//                 p->next = p->next->next;
+//                 p->next->next = p1;
+//                 p->next->next->next = p2;
+//                 pd = 1;
+//             }
+//             else if (p->next->PriceL == p->next->next->PriceL && strcmp(p->next->roomN, p->next->next->roomN) > 0)
+//             {
+//                 HLink p1 = p->next, p2 = p->next->next->next;
+//                 p->next = p->next->next;
+//                 p->next->next = p1;
+//                 p->next->next->next = p2;
+
+//                 pd = 1;
+//             }
+//             p = p->next;
+//         }
+//     }
+// }
+
 // 函数void SortPriceL(HLink &H)，按照客房（入住价格，客房名称）升序排序；冒泡
 void SortPriceL(HLink &H)
 {
-    int pd = 1;
-    while (pd != 0)
+    if (p->next == NULL)
     {
-        pd = 0;
-        HLink p = H;
-        while (p->next->next != NULL)
+        printf("空");
+        return;
+    }
+    HLink p = H->next->next;
+    while (p != NULL)
+    {
+        HLink pnext=p->next;
+        HLink q=H;
+        int pd=0;
+        while (q->next!=NULL)
         {
-            if (p->next->PriceL > p->next->next->Price)
-            {
-                HLink p1 = p->next, p2 = p->next->next->next;
-                p->next = p->next->next;
-                p->next->next = p1;
-                p->next->next->next = p2;
-                pd = 1;
+            if(p->PriceL<q->next->PriceL){
+                HLink temp=q->next->next;
+                q->next=p;
+                p->next=temp;
+                pd=1;
+                break;
             }
-            else if (p->next->PriceL == p->next->next->PriceL && strcmp(p->next->roomN, p->next->next->roomN) > 0)
-            {
-                HLink p1 = p->next, p2 = p->next->next->next;
-                p->next = p->next->next;
-                p->next->next = p1;
-                p->next->next->next = p2;
-
-                pd = 1;
+            else if(p->PriceL==q->next->PriceL){
+                while(p->PriceL==q->next->PriceL){
+                    if(strcmp(p->roomN, q->next->roomN) > 0){
+                        
+                    }
+                }
             }
-            p = p->next;
         }
+        
+        p=pnext;
     }
 }
-
 // 函数void upBed(HLink &H,int beds)，创建一个【床位数为beds的新结点】（还需输入：客房名称、标准价格等信息），使链表的形态为：【头结点】->【床位数>beds的结点】->【床位数为beds的新结点】->【床位数<=beds的结点】，要求【超过beds的结点】和【不超过beds的结点】这两段链表中的结点保持原来的前后相对顺序；
 void upBed(HLink &H, int beds)
 {
