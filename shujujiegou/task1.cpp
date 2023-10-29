@@ -218,28 +218,38 @@ void SortPriceL(HLink &H)
     HLink p = H->next->next;
     while (p != NULL)
     {
-        HLink pnext=p->next;
-        HLink q=H;
-        int pd=0;
-        while (q->next!=NULL)
+        HLink pnext = p->next;
+        HLink q = H;
+        int pd = 0;
+        while (q->next != NULL)
         {
-            if(p->PriceL<q->next->PriceL){
-                HLink temp=q->next->next;
-                q->next=p;
-                p->next=temp;
-                pd=1;
+            if (p->PriceL < q->next->PriceL)
+            {
+                HLink temp = q->next->next;
+                q->next = p;
+                p->next = temp;
+                pd = 1;
                 break;
             }
-            else if(p->PriceL==q->next->PriceL){
-                while(p->PriceL==q->next->PriceL){
-                    if(strcmp(p->roomN, q->next->roomN) > 0){
-                        
+            else if (p->PriceL == q->next->PriceL)
+            {
+                while (p->PriceL == q->next->PriceL)
+                {
+                    if (strcmp(p->roomN, q->next->roomN) > 0)
+                    {
+                        HLink temp = q->next->next;
+                        q->next = p;
+                        p->next = temp;
+                        pd = 1;
+                        break;
                     }
                 }
+                pd = 1;
+                break;
             }
         }
-        
-        p=pnext;
+
+        p = pnext;
     }
 }
 // 函数void upBed(HLink &H,int beds)，创建一个【床位数为beds的新结点】（还需输入：客房名称、标准价格等信息），使链表的形态为：【头结点】->【床位数>beds的结点】->【床位数为beds的新结点】->【床位数<=beds的结点】，要求【超过beds的结点】和【不超过beds的结点】这两段链表中的结点保持原来的前后相对顺序；
