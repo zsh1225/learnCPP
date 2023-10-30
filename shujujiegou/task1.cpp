@@ -210,47 +210,30 @@ void ReverseN2(HLink &H)
 // 函数void SortPriceL(HLink &H)，按照客房（入住价格，客房名称）升序排序；冒泡
 void SortPriceL(HLink &H)
 {
-    if (p->next == NULL)
+    if (H->next == NULL)
     {
-        printf("空");
+        printf("空\n");
         return;
     }
-    HLink p = H->next->next;
-    while (p != NULL)
-    {
-        HLink pnext = p->next;
-        HLink q = H;
-        int pd = 0;
-        while (q->next != NULL)
-        {
-            if (p->PriceL < q->next->PriceL)
-            {
-                HLink temp = q->next->next;
-                q->next = p;
-                p->next = temp;
-                pd = 1;
-                break;
-            }
-            else if (p->PriceL == q->next->PriceL)
-            {
-                while (p->PriceL == q->next->PriceL)
-                {
-                    if (strcmp(p->roomN, q->next->roomN) > 0)
-                    {
-                        HLink temp = q->next->next;
-                        q->next = p;
-                        p->next = temp;
-                        pd = 1;
-                        break;
-                    }
-                }
-                pd = 1;
-                break;
-            }
-        }
+    HLink sorted, choose, aft;
+	sorted = H;
+	choose = sorted->next->next;
+	sorted->next->next = NULL;
+	while (choose) {//若“sorted指针已经遍历到尾结点或者sorted后一个指针存储的信息大于等于choose存储的信息”那么choose结点插入到sorted之后
+			if (!sorted->next ||//“sorted存储的信息大于choose”指的是入住价格大或者在入住价格一样时房间号大
+				((choose->PriceL < sorted->next->PriceL) ||
+				((choose->PriceL == sorted->next->PriceL) && (strcmp(choose->roomN, sorted->next->roomN) < 0)))) {
+				aft = choose->next;
+				choose->next = sorted->next;
+				sorted->next = choose;
+				choose = aft;
+				sorted = H;
+			}
+			else {
+				sorted = sorted->next;
+			}
+	}
 
-        p = pnext;
-    }
 }
 // 函数void upBed(HLink &H,int beds)，创建一个【床位数为beds的新结点】（还需输入：客房名称、标准价格等信息），使链表的形态为：【头结点】->【床位数>beds的结点】->【床位数为beds的新结点】->【床位数<=beds的结点】，要求【超过beds的结点】和【不超过beds的结点】这两段链表中的结点保持原来的前后相对顺序；
 void upBed(HLink &H, int beds)
